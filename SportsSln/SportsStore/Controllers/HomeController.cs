@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SportsStore.Models;
 using System.Linq;
+using System;
 
 namespace SportsStore.Controllers {
 
@@ -25,11 +26,14 @@ namespace SportsStore.Controllers {
 
         // home/index/2
         public ViewResult Index(int productPage = 1)
-            => View(repository.Products
+            {
+                productPage = productPage > 0 ? productPage : 1;
+                return View(repository.Products
                 .OrderBy(p => p.ProductID)
                 .Skip((productPage - 1) * PageSize)
                 .Take(PageSize)
                 );
+            }
     }
 
     // public IActionResult ProductsLit1() => (new StoreDbContext()).Products;
