@@ -1,11 +1,12 @@
+using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using SportsStore.Models;
-using System.Linq;
-using System;
+// using System;
+using SportsStore.Models.ViewModels;
 
 namespace SportsStore.Controllers {
 
-    public class HomeController: Controller {
+    public class HomeController : Controller {
 
         // поле для хранения ссылки на репозиторий
         private IStoreRepository repository;
@@ -13,7 +14,7 @@ namespace SportsStore.Controllers {
         public int PageSize = 4;
 
         // внедрение зависимости через аргумент конструктора
-        public HomeController(IStoreRepository repo) {
+        public HomeController (IStoreRepository repo) {
             repository = repo;
         }
 
@@ -25,15 +26,18 @@ namespace SportsStore.Controllers {
         } */
 
         // home/index/2
-        public ViewResult Index(int productPage = 1)
-            {
-                productPage = productPage > 0 ? productPage : 1;
-                return View(repository.Products
-                .OrderBy(p => p.ProductID)
-                .Skip((productPage - 1) * PageSize)
-                .Take(PageSize)
-                );
-            }
+        public ViewResult Index (int productPage = 1) => View (new ProductsListViewModel {
+            Products = repository.Products
+                .OrderBy (p => p.ProductID)
+                .Skip ((productPage - 1) * PageSize)
+                .Take (PageSize),
+                PagingInfo = new PagingInfo {
+                    CurrentPage = productPage,
+                        ItemsPerPage = PageSize,
+                        TotalItems = repository.Products.Count ()
+                }
+        });
+
     }
 
     // public IActionResult ProductsLit1() => (new StoreDbContext()).Products;
