@@ -11,7 +11,7 @@ namespace SportsStore.Controllers {
         // поле для хранения ссылки на репозиторий
         private IStoreRepository repository;
         // товаров на одной странице
-        public int PageSize = 4;
+        public int PageSize = 3;
 
         // внедрение зависимости через аргумент конструктора
         public HomeController (IStoreRepository repo) {
@@ -32,11 +32,12 @@ namespace SportsStore.Controllers {
                 .OrderBy (p => p.ProductID)
                 .Skip ((productPage - 1) * PageSize)
                 .Take (PageSize),
-                PagingInfo = new PagingInfo {
-                    CurrentPage = productPage,
-                        ItemsPerPage = PageSize,
-                        TotalItems = repository.Products.Count ()
-                }
+            PagingInfo = new PagingInfo {
+                CurrentPage = productPage,
+                    ItemsPerPage = PageSize,
+                    TotalItems = repository.Products.Where(p => category == null || p.Category == category).Count ()
+            },
+            CurrentCategory = category
         });
 
     }
