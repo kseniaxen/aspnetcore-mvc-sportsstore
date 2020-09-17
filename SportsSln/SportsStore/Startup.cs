@@ -29,6 +29,11 @@ namespace SportsStore {
                     Configuration["ConnectionStrings:SportsStoreConnection"]);
             });
             services.AddScoped<IStoreRepository, EFStoreRepository> ();
+            // активация дополнительного мини-каркаса работы с серверными страницами
+            services.AddRazorPages();
+            // активация работы с http-сеансами
+            services.AddDistributedMemoryCache();
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -36,9 +41,11 @@ namespace SportsStore {
             if (env.IsDevelopment ()) {
                 app.UseDeveloperExceptionPage ();
             }
-
+            /* добавление стандартных MiddleWare-звеньев
+            в PipeLine приложения */
             app.UseStatusCodePages ();
             app.UseStaticFiles ();
+            app.UseSession();
             app.UseRouting ();
 
             app.UseEndpoints (endpoints => {
@@ -63,8 +70,10 @@ namespace SportsStore {
                     new {
                         Controller = "Home", action = "Index"
                     });
-
+                // добавление роута по умолчанию
                 endpoints.MapDefaultControllerRoute ();
+                // добавление роута серверных страниц
+                endpoints.MapRazorPages();
                 // The same:
                 /* endpoints.MapControllerRoute("pagination",
                     "Products/{Page?}/{productPage:regex(^[1-9]\\d*$)}",
