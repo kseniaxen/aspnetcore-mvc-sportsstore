@@ -29,6 +29,7 @@ namespace SportsStore {
                     Configuration["ConnectionStrings:SportsStoreConnection"]);
             });
             services.AddScoped<IStoreRepository, EFStoreRepository> ();
+            services.AddScoped<IOrderRepository, EFOrderRepository>();
             // активация дополнительного мини-каркаса работы с серверными страницами
             services.AddRazorPages();
             // активация работы с http-сеансами
